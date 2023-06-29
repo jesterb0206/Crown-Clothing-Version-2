@@ -24,7 +24,20 @@ export const CategoriesProvider = ({children}) => {
   const {loading, error, data} = useQuery(COLLECTIONS);
   const [categoriesMap, setCategoriesMap] = useState({});
 
-  const value = {categoriesMap};
+  useEffect(() => {
+    if (data) {
+      const {collections} = data;
+      const collectionsMap = collections.reduce((acc, collection) => {
+        const {title, items} = collection;
+        acc[title.toLowerCase()] = items;
+        return acc;
+      }, {});
+
+      setCategoriesMap(collectionsMap);
+    }
+  });
+
+  const value = {categoriesMap, loading};
 
   return (
     <CategoriesContext.Provider value={value}>
